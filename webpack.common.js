@@ -10,6 +10,7 @@ module.exports = {
     options: path.resolve("src/options/options.tsx"),
     background: path.resolve("src/background/background.ts"),
     contentScript: path.resolve("src/contentScript/contentScript.tsx"),
+    toastScript: path.resolve("src/contentScript/toastScript.tsx"),
   },
   module: {
     rules: [
@@ -52,19 +53,30 @@ module.exports = {
   optimization: {
     splitChunks: {
       chunks(chunk) {
-        return chunk.name !== "contentScript" && chunk.name !== "background";
+        return (
+          chunk.name !== "contentScript" &&
+          chunk.name !== "background" &&
+          chunk.name !== "toastScript"
+        );
       },
     },
   },
 };
 
 function getHtmlPlugins(chunks) {
-  return chunks.map(
-    (chunk) =>
-      new HtmlPlugin({
+  return chunks.map((chunk) => {
+    if (chunk === "popup") {
+      return new HtmlPlugin({
         title: "React Extension",
         filename: `${chunk}.html`,
         chunks: [chunk],
-      })
-  );
+        template: path.resolve("src/webpack-html-templates/popup.html"),
+      });
+    }
+    return new HtmlPlugin({
+      title: "React Extension",
+      filename: `${chunk}.html`,
+      chunks: [chunk],
+    });
+  });
 }

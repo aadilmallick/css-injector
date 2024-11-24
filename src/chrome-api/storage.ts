@@ -23,8 +23,17 @@ export abstract class ChromeStorage<
   }
 
   async getAll() {
-    const data = await this.storage.get(this.getKeys());
+    const keys = this.getKeys();
+    if (keys.length === 0) {
+      return await this.getAllData();
+    }
+    const data = await this.storage.get();
     return data as T;
+  }
+
+  async getAllData() {
+    const data = (await this.storage.get(null)) as unknown as T;
+    return data;
   }
 
   getKeys() {

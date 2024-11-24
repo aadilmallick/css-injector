@@ -52,6 +52,13 @@ export default class Scripting {
     });
   }
 
+  static async insertCssString(tabId: number, css: string) {
+    await chrome.scripting.insertCSS({
+      css,
+      target: { tabId },
+    });
+  }
+
   static async removeCss(tabId: number, cssFiles: string | string[]) {
     await chrome.scripting.removeCSS({
       files: getArray(cssFiles),
@@ -68,6 +75,7 @@ export class ContentScriptModel {
       id: string;
       css?: string[];
       world?: "MAIN" | "ISOLATED";
+      persistAcrossSessions?: boolean;
     }
   ) {}
 
@@ -87,7 +95,7 @@ export class ContentScriptModel {
         matches: this.scriptData.matches,
         css: this.scriptData.css,
         world: this.scriptData.world || "ISOLATED",
-        persistAcrossSessions: false,
+        persistAcrossSessions: this.scriptData.persistAcrossSessions,
       },
     ]);
   }
