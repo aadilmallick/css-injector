@@ -34,6 +34,7 @@
   "dependencies": {
     "prism-code-editor": "^3.4.0",
     "prism-react-editor": "^1.1.0",
-    "prismjs": "^1.29.0"
+    "prismjs": "^1.29.0",
+    "react-switch": "^7.0.0"
   }
 }

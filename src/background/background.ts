@@ -24,7 +24,9 @@ async function cssInjector(tabId: number, code: string) {
       code,
     }
   );
-  await Scripting.executeScripts(tabId, "toastScript.js");
+  const showToastNotis = await appSettingsStorage.get("showToastNotifications");
+
+  showToastNotis && (await Scripting.executeScripts(tabId, "toastScript.js"));
 }
 
 Runtime.onInstall({
@@ -33,13 +35,18 @@ Runtime.onInstall({
     await appSettingsStorage.setup();
     const data = await appStorage.getAll();
     console.log("storage", data);
+    console.log("settings");
+    console.table(await appSettingsStorage.getAll());
   },
 });
 
 Tabs.Events.onTabHighlighted(async (highlightInfo) => {
   const tab = await Tabs.getTabById(highlightInfo.tabIds[0]);
-  console.log("Tab highlighted", tab);
+  console.log("Tab highlighted", tab.url);
   if (tab.url) {
+    if (tab.url.startsWith("chrome://")) {
+      return;
+    }
     const css = await appStorage.get(new URL(tab.url).hostname);
     console.log("CSS", css);
     await cssInjector(tab.id, css);
@@ -47,8 +54,11 @@ Tabs.Events.onTabHighlighted(async (highlightInfo) => {
 });
 
 Tabs.Events.onTabNavigateComplete(async (tabId, tab) => {
-  console.log("Tab updated", tabId, tab);
+  console.log("Tab updated", tab.url);
   if (tab.url) {
+    if (tab.url.startsWith("chrome://")) {
+      return;
+    }
     const css = await appStorage.get(new URL(tab.url).hostname);
     console.log("CSS", css);
     await cssInjector(tab.id, css);

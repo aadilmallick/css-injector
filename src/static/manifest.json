@@ -1,7 +1,7 @@
 {
   "name": "CSS Inject",
   "description": "Inject custom CSS into any website",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "manifest_version": 3,
   "icons": {
     "16": "icon.png",
@@ -10,10 +10,10 @@
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "React Extension",
+    "default_title": "Inject CSS",
     "default_icon": "icon.png"
   },
-  "permissions": ["storage", "scripting", "activeTab"],
+  "permissions": ["storage", "scripting", "activeTab", "unlimitedStorage"],
   "optional_host_permissions": ["<all_urls>"],
   "options_page": "options.html",
   "background": {

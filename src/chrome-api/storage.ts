@@ -27,7 +27,7 @@ export abstract class ChromeStorage<
     if (keys.length === 0) {
       return await this.getAllData();
     }
-    const data = await this.storage.get();
+    const data = await this.storage.get(keys);
     return data as T;
   }
 

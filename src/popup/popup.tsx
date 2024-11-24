@@ -6,7 +6,10 @@ import PrismCodeblock from "./PrismCodeblock";
 import { CodeBlockProvider, useCodeBlockContext } from "./CodeBlockContext";
 import Tabs from "../chrome-api/tabs";
 import PermissionsModel from "../chrome-api/permissions";
-import { appStorage } from "../background/controllers/storage";
+import {
+  appSettingsStorage,
+  appStorage,
+} from "../background/controllers/storage";
 import Scripting from "../chrome-api/scripting";
 import { url } from "valibot";
 // import Prism from "prismjs";
@@ -54,7 +57,9 @@ async function applyCSS(code: string) {
       code,
     }
   );
-  await Scripting.executeScripts(currentTab.id, "toastScript.js");
+  const showToastNotis = await appSettingsStorage.get("showToastNotifications");
+  showToastNotis &&
+    (await Scripting.executeScripts(currentTab.id, "toastScript.js"));
 }
 
 async function getCSS(): Promise<{ css: string; url: string } | null> {
